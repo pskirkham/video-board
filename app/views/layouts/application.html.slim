@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title = content_for(:title) || "VideoBoard"
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    meta name="apple-mobile-web-app-capable" content="yes"
+    meta name="mobile-web-app-capable" content="yes"
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = yield :head
+
+    / Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!)
+    / link rel="manifest" href=pwa_manifest_path(format: :json)
+
+    link rel="icon" href="/icon.png" type="image/png"
+    link rel="icon" href="/icon.svg" type="image/svg+xml"
+    link rel="apple-touch-icon" href="/icon.png"
+
+    / Includes all stylesheet files in app/assets/stylesheets
+    = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    = javascript_importmap_tags
+  body.bg-gray-100.font-sans
+    header.bg-white.shadow
+      .container.mx-auto.px-6.py-4.flex.items-center.justify-between
+        h1.text-2xl.font-bold.text-gray-800 VideoBoard
+        nav
+          ul.flex.space-x-4
+            li
+              = link_to 'Reels', reels_path, class: 'text-gray-700 hover:text-blue-500'
+    main.container.mx-auto.px-6.py-8
+      = yield
+    footer.bg-white.shadow-inner.mt-8
+      .container.mx-auto.px-6.py-4.text-center.text-gray-600
+        p © #{Time.now.year} VideoBoard. All rights reserved.

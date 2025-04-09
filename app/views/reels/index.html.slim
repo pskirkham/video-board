@@ -1,0 +1,11 @@
+h1.text-2xl.font-bold.mb-4 Reels
+
+= link_to 'New Reel', new_reel_path, class: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
+
+ul.mt-6.space-y-4
+  - @reels.each do |reel|
+    li.p-4.bg-white.shadow.rounded
+      h2.text-lg.font-semibold = reel.name
+      = link_to 'Show', reel_path(reel), class: 'text-blue-500 hover:underline mr-2'
+      = link_to 'Edit', edit_reel_path(reel), class: 'text-yellow-500 hover:underline mr-2'
+      = link_to 'Delete', reel_path(reel), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-500 hover:underline'

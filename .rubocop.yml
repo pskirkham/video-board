@@ -1,0 +1,47 @@
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: disable
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 99
+
+Metrics/ClassLength:
+  Max: 999
+
+Metrics/ModuleLength:
+  Max: 999
+
+Metrics/CyclomaticComplexity:
+  Max: 32
+
+Metrics/PerceivedComplexity:
+  Max: 99
+
+Metrics/AbcSize:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 160

@@ -1,0 +1,5 @@
+h1.text-2xl.font-bold.mb-4 = action_name == 'new' ? 'New Reel' : 'Edit Reel'
+
+= render 'form', reel: @reel
+
+= link_to 'Back', reels_path, class: 'text-blue-500 hover:underline mt-4 inline-block'

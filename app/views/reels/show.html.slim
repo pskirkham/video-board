@@ -1,0 +1,31 @@
+h1.text-2xl.font-bold.mb-4 = @reel.name
+
+h2.text-xl.font-semibold.mt-6.mb-2 Reel Items
+
+ul.space-y-2
+  - @reel.reel_items.each do |item|
+    li.bg-gray-100.p-2.rounded.flex.items-center
+      - if item.file.attached?
+        = link_to rails_blob_path(item.file, disposition: "preview"), target: "_blank", class: "mr-4" do
+          - if item.file.content_type.start_with?("image/")
+            = image_tag url_for(item.file.variant(resize_to_fill: [640, 360]).processed), class: "h-40"
+          - elsif item.file.content_type.start_with?("video/")
+            = image_tag url_for(item.file.preview(resize_to_fill: [640, 360]).processed), class: "h-40"
+          - else
+            = image_tag url_for(item.file), class: "h-40"
+      - else
+        = link_to "#", class: "mr-4" do
+          span.text-gray-500 No attachment
+      .flex.flex-col
+        span.font-mono Item ##{item.id}
+        - if item.file.attached?
+          span.text-gray-700 = item.file.filename.to_s
+          - if item.image?
+            span.text-gray-700 Duration: #{duration_hms item.duration}
+          - elsif item.video?
+            span.text-gray-700 Duration: #{duration_hms item.video_duration}
+        - else
+          span.text-gray-500 No file attached.
+
+= link_to 'Edit', edit_reel_path(@reel), class: 'text-yellow-500 hover:underline mt-4 inline-block'
+= link_to 'Back', reels_path, class: 'text-blue-500 hover:underline ml-4'
