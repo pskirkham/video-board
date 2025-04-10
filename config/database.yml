@@ -82,5 +82,18 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  url: <%= ENV['DATABASE_URL'] %>
-  encoding: utf8
+  primary: &primary_production
+    url: <%= ENV['DATABASE_URL'] %>
+    encoding: utf8
+  cache:
+    <<: *primary_production
+    database: <%= ENV['DATABASE_URL'] %>
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: <%= ENV['DATABASE_URL'] %>
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: <%= ENV['DATABASE_URL'] %>
+    migrations_paths: db/cable_migrate
