@@ -53,6 +53,10 @@ group :development do
   gem "web-console"
 end
 
+group :production do
+  gem "aws-sdk-s3", require: false
+end
+
 gem "simple_form", "~> 5.3"
 gem "slim-rails", "~> 3.7"
 
