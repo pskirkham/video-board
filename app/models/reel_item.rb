@@ -4,7 +4,7 @@ class ReelItem < ApplicationRecord
   acts_as_list scope: :reel
 
   before_validation :remove_duration_for_non_photos
-  after_commit :generate_thumbnail, on: %i[create update], if: -> { file.attached? }
+  after_commit :enqueue_thumbnail_generation, on: %i[create update], if: -> { file.attached? }
 
   validate :duration_required_for_photos
 
@@ -48,11 +48,7 @@ class ReelItem < ApplicationRecord
     self.duration = nil if file.attached? && !file.content_type.start_with?("image/")
   end
 
-  def generate_thumbnail
-    if image?
-      file.variant(resize_to_fill: [640, 360]).processed
-    elsif video?
-      file.preview(resize_to_fill: [640, 360]).processed
-    end
+  def enqueue_thumbnail_generation
+    GenerateThumbnailJob.perform_later(id)
   end
 end
