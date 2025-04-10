@@ -17,15 +17,25 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch('RAILS_MAX_THREADS'){ 5 }.to_i * ENV.fetch('WEB_CONCURRENCY'){ 2 }.to_i %>
-  database: <%= ENV.fetch('DB_NAME', 'meade') %>
-  username: <%= ENV.fetch('DB_USERNAME', 'root') %>
-  password: <%= ENV.fetch('DB_PASSWORD', '') %>
-  host: <%= ENV.fetch('DB_HOSTNAME', 'localhost') %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i * ENV.fetch("WEB_CONCURRENCY", 2).to_i %>
+  database: <%= ENV.fetch("DB_NAME", "video_board") %>
+  username: <%= ENV.fetch("DB_USERNAME", "root") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "") %>
+  host: <%= ENV.fetch("DB_HOSTNAME", "localhost") %>
 
 development:
-  <<: *default
-  pool: <%= ENV.fetch('RAILS_MAX_THREADS'){ 5 } %>
+  primary:
+    <<: *default
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  cache:
+    <<: *default
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
