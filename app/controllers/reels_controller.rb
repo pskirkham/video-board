@@ -1,5 +1,5 @@
 class ReelsController < ApplicationController
-  before_action :set_reel, only: %i[show edit update destroy]
+  before_action :set_reel, only: %i[show edit update destroy publish delete_video]
 
   def index
     @reels = Reel.all
@@ -38,6 +38,17 @@ class ReelsController < ApplicationController
     redirect_to reels_url, notice: "Reel was successfully destroyed."
   end
 
+  def publish
+    @reel.video.purge
+    GenerateReelVideoJob.perform_later(@reel.id)
+    redirect_to @reel, notice: "Video generation has been started."
+  end
+
+  def delete_video
+    @reel.video.purge
+    redirect_to @reel, notice: "Video was successfully deleted."
+  end
+
   private
 
   def set_reel
@@ -45,6 +56,6 @@ class ReelsController < ApplicationController
   end
 
   def reel_params
-    params.require(:reel).permit(:name, reel_items_attributes: [ :id, :file, :duration, :position, :_destroy ])
+    params.require(:reel).permit(:name, reel_items_attributes: %i[id file duration position _destroy])
   end
 end
