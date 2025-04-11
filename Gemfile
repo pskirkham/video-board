@@ -50,7 +50,7 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "dotenv-rails", "~> 2.8"
+  gem "dotenv-rails", "~> 3.1"
   gem "web-console"
 end
 
