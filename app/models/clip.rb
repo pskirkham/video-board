@@ -18,17 +18,20 @@ class Clip < ApplicationRecord
   def analyze_video
     return unless video.attached?
 
-    codec = `ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 #{video_path}`
-    update_column(:codec, codec.strip)
+    # Download the video to a temporary file
+    Tempfile.create(["video", File.extname(video.filename.to_s)]) do |file|
+      file.binmode
+      file.write(video.download)
+      file.rewind
+
+      codec = `ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 #{file.path}`
+      update_column(:codec, codec.strip)
+    end
   end
 
   def generate_thumbnail
     return unless video.attached?
 
     GenerateThumbnailJob.perform_later(id)
-  end
-
-  def video_path
-    ActiveStorage::Blob.service.path_for(video.key)
   end
 end
