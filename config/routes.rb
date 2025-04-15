@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :reels do
     member do
       post :publish
-      delete :delete_video
+      get :playlist, format: :m3u8
     end
   end
 

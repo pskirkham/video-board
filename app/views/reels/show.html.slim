@@ -1,38 +1,28 @@
 h1.text-2xl.font-bold.mb-4 = @reel.name
 
-.flex.gap-4.mb-4
-  = link_to 'Publish Reel', publish_reel_path(@reel), data: { turbo_method: :post }, class: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-  - if @reel.video.attached?
-    .flex.gap-2
-      = link_to 'Download Video', rails_blob_path(@reel.video, disposition: "attachment"), class: 'bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600'
-      = button_to 'Delete Video', delete_video_reel_path(@reel), method: :delete, class: 'bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600', form: { data: { turbo_confirm: 'Are you sure you want to delete this video?' } }
-
-h2.text-xl.font-semibold.mt-6.mb-2 Reel Items
+h2.text-xl.font-semibold.mt-6.mb-2 Clips
 
 ul.space-y-2
-  - @reel.reel_items.each do |item|
+  - @reel.clips.each do |clip|
     li.bg-gray-100.p-2.rounded.flex.items-center
-      - if item.file.attached?
-        = link_to rails_blob_path(item.file, disposition: "preview"), target: "_blank", class: "mr-4" do
-          - if item.file.content_type.start_with?("image/")
-            = image_tag url_for(item.file.variant(resize_to_fill: [640, 360]).processed), class: "h-40"
-          - elsif item.file.content_type.start_with?("video/")
-            = image_tag url_for(item.file.preview(resize_to_fill: [640, 360]).processed), class: "h-40"
+      - if clip.video.attached?
+        = link_to rails_blob_path(clip.video, disposition: "preview"), target: "_blank", class: "mr-4" do
+          - if clip.video.previewable?
+            = image_tag url_for(clip.video.preview(resize_to_fill: [640, 360]).processed), class: "h-40"
           - else
-            = image_tag url_for(item.file), class: "h-40"
+            = render "shared/video_placeholder"
       - else
         = link_to "#", class: "mr-4" do
-          span.text-gray-500 No attachment
+          = render "shared/video_placeholder"
       .flex.flex-col
-        span.font-mono Item ##{item.id}
-        - if item.file.attached?
-          span.text-gray-700 = item.file.filename.to_s
-          - if item.image?
-            span.text-gray-700 Duration: #{duration_hms item.duration}
-          - elsif item.video?
-            span.text-gray-700 Duration: #{duration_hms item.video_duration}
+        span.font-mono Clip ##{clip.id}
+        - if clip.video.attached?
+          span.text-gray-700 = clip.video.filename.to_s
+          span[class=(clip.h264? ? "text-green-500" : "text-red-500")]= clip.codec
         - else
-          span.text-gray-500 No file attached.
+          span.text-gray-500 No video attached.
 
-= link_to 'Edit', edit_reel_path(@reel), class: 'text-yellow-500 hover:underline mt-4 inline-block'
-= link_to 'Back', reels_path, class: 'text-blue-500 hover:underline ml-4'
+.flex.items-center.mt-4
+  = button_to "Publish Reel", publish_reel_path(@reel), method: :post, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", data: { turbo: true }
+  = link_to 'Edit', edit_reel_path(@reel), class: 'text-yellow-500 hover:underline ml-4'
+  = link_to 'Back', reels_path, class: 'text-blue-500 hover:underline ml-4'

@@ -1,0 +1,20 @@
+.nested-field[data-new-field]
+  .relative.border.p-4.rounded.bg-white.shadow.mb-4
+    .absolute.top-0.right-0.cursor-grab.p-2.drag-handle
+      | ≡
+    - if f.object.new_record?
+      .mb-4
+        = f.label :video, "Video", class: "block text-gray-700 font-bold mb-2"
+        = f.file_field :video, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", accept: "video/*", data: { controller: "attachment", action: "change->attachment#toggle" }
+    - else
+      - if f.object.video.attached?
+        .mb-4
+          p.text-gray-700= f.object.video.filename
+          span[class=(f.object.h264? ? "text-green-500" : "text-red-500")]= f.object.codec
+      - else
+        .mb-4
+          p.text-gray-700 No video attached.
+    = f.hidden_field :position, value: (f.object.position || 0)
+    .flex.items-center
+      = f.check_box :_destroy, class: "mr-2"
+      = f.label :_destroy, "Remove", class: "text-gray-700", data: { action: "click->nested-fields#remove" }
