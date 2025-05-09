@@ -26,26 +26,6 @@ ul.space-y-6
           - else
             span.text-gray-500 No video attached.
 
-h2.text-xl.font-semibold.mt-6.mb-2 All Video Segments
-
-.overflow-x-auto
-  table.min-w-full.border.border-gray-300.mt-2
-    thead.bg-gray-100
-      tr
-        th.border.border-gray-300.px-4.py-2.text-left Pos
-        th.border.border-gray-300.px-4.py-2.text-left Duration
-        th.border.border-gray-300.px-4.py-2.text-left Filename
-    tbody
-      - @reel.video_segments.each do |segment|
-        tr
-          td.border.border-gray-300.px-4.py-2 = segment.position
-          td.border.border-gray-300.px-4.py-2 = "#{segment.duration}s"
-          td.border.border-gray-300.px-4.py-2
-            - if segment.video.attached?
-              = link_to segment.video.filename, rails_blob_path(segment.video, disposition: "attachment"), target: "_blank", class: "text-blue-500 hover:underline"
-            - else
-              span.text-gray-500 No file attached
-
 .flex.items-center.mt-6
   = link_to 'Edit', edit_reel_path(@reel), class: 'text-yellow-500 hover:underline ml-4'
   = link_to 'Back', reels_path, class: 'text-blue-500 hover:underline ml-4'

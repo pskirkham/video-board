@@ -1,7 +1,6 @@
 class Clip < ApplicationRecord
   belongs_to :reel
   has_one_attached :video
-  has_many :video_segments, dependent: :nullify
 
   acts_as_list scope: :reel
 
@@ -40,12 +39,5 @@ class Clip < ApplicationRecord
     return unless video.attached?
 
     GenerateThumbnailJob.perform_later(id)
-  end
-
-  def update_duration_from_segments
-    return unless video_segments.any?
-
-    total_duration = video_segments.sum(:duration)
-    update_column(:duration, total_duration)
   end
 end
