@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_182000) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_06_191529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_182000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "codec"
+    t.integer "width"
+    t.integer "height"
+    t.decimal "duration", precision: 10, scale: 6
     t.index ["reel_id", "position"], name: "index_clips_on_reel_id_and_position"
     t.index ["reel_id"], name: "index_clips_on_reel_id"
   end
@@ -209,6 +212,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_182000) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "video_segments", force: :cascade do |t|
+    t.bigint "clip_id", null: false
+    t.integer "position"
+    t.decimal "duration", precision: 8, scale: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clip_id"], name: "index_video_segments_on_clip_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clips", "reels"
@@ -219,4 +231,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_182000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "video_segments", "clips"
 end

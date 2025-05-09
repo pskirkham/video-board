@@ -27,4 +27,16 @@ module ApplicationHelper
       "bg-gray-100 text-gray-800 border border-gray-400"
     end
   end
+
+  def format_duration(duration)
+    duration = duration.to_f
+    return "0s" unless duration&.positive?
+
+    parts = []
+    parts << "#{duration.to_i / 3600}h" if duration >= 3600
+    parts << "#{duration.to_i % 3600 / 60}m" if duration >= 60
+    parts << "#{(duration % 60).round(2)}s" if duration > 0
+
+    parts.join
+  end
 end

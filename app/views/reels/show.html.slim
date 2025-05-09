@@ -2,27 +2,50 @@ h1.text-2xl.font-bold.mb-4 = @reel.name
 
 h2.text-xl.font-semibold.mt-6.mb-2 Clips
 
-ul.space-y-2
+ul.space-y-6
   - @reel.clips.each do |clip|
-    li.bg-gray-100.p-2.rounded.flex.items-center
-      - if clip.video.attached?
-        = link_to rails_blob_path(clip.video, disposition: "preview"), target: "_blank", class: "mr-4" do
-          - if clip.video.previewable?
-            = image_tag url_for(clip.video.preview(resize_to_fill: [640, 360]).processed), class: "h-40"
-          - else
-            = render "shared/video_placeholder"
-      - else
-        = link_to "#", class: "mr-4" do
-          = render "shared/video_placeholder"
-      .flex.flex-col
-        span.font-mono Clip ##{clip.id}
+    li.bg-gray-100.p-4.rounded
+      .flex.items-center.mb-4
         - if clip.video.attached?
-          span.text-gray-700 = clip.video.filename.to_s
-          span[class=(clip.h264? ? "text-green-500" : "text-red-500")]= clip.codec
+          = link_to rails_blob_path(clip.video, disposition: "preview"), target: "_blank", class: "mr-4" do
+            - if clip.video.previewable?
+              = image_tag url_for(clip.video.preview(resize_to_fill: [640, 360]).processed), class: "h-40"
+            - else
+              = render "shared/video_placeholder"
         - else
-          span.text-gray-500 No video attached.
+          = link_to "#", class: "mr-4" do
+            = render "shared/video_placeholder"
+        .flex.flex-col
+          span.font-mono.text-lg Clip ##{clip.id}
+          - if clip.video.attached?
+            / span.text-gray-700 = clip.video.filename.to_s
+            = link_to clip.video.filename, rails_blob_path(clip.video, disposition: "attachment"), target: "_blank", class: "text-blue-500 hover:underline"
+            span[class=(clip.h264? ? "text-green-500" : "text-red-500")]= clip.codec
+            span[class=(clip.height&.>=(1080) ? "text-green-500" : "text-red-500")]= clip.resolution
+            span.text-gray-500 = format_duration(clip.duration)
+          - else
+            span.text-gray-500 No video attached.
 
-.flex.items-center.mt-4
-  = button_to "Publish Reel", publish_reel_path(@reel), method: :post, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", data: { turbo: true }
+h2.text-xl.font-semibold.mt-6.mb-2 All Video Segments
+
+.overflow-x-auto
+  table.min-w-full.border.border-gray-300.mt-2
+    thead.bg-gray-100
+      tr
+        th.border.border-gray-300.px-4.py-2.text-left Pos
+        th.border.border-gray-300.px-4.py-2.text-left Duration
+        th.border.border-gray-300.px-4.py-2.text-left Filename
+    tbody
+      - @reel.video_segments.each do |segment|
+        tr
+          td.border.border-gray-300.px-4.py-2 = segment.position
+          td.border.border-gray-300.px-4.py-2 = "#{segment.duration}s"
+          td.border.border-gray-300.px-4.py-2
+            - if segment.video.attached?
+              = link_to segment.video.filename, rails_blob_path(segment.video, disposition: "attachment"), target: "_blank", class: "text-blue-500 hover:underline"
+            - else
+              span.text-gray-500 No file attached
+
+.flex.items-center.mt-6
   = link_to 'Edit', edit_reel_path(@reel), class: 'text-yellow-500 hover:underline ml-4'
   = link_to 'Back', reels_path, class: 'text-blue-500 hover:underline ml-4'
