@@ -31,7 +31,9 @@ class Clip < ApplicationRecord
       dimensions = `ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x #{file.path}`.strip
       width, height = dimensions.split("x").map(&:to_i)
 
-      update_columns(codec:, width:, height:)
+      duration = `ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 #{file.path}`.strip.to_d
+
+      update_columns(codec:, width:, height:, duration:)
     end
   end
 
